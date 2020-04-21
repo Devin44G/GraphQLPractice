@@ -128,7 +128,7 @@ const schema = new GraphQLSchema({
 });
 
 const server = express();
-      server.use('/grapghql', expressGraphql({
+      server.use('/graphql', expressGraphql({
         schema: schema,
         graphiql: true
       })
