@@ -1,4 +1,7 @@
+//this is still under construction... not working properly
+
 import React, {useState, useEffect} from 'react';
+
 //fakeDataBase
 const projects = [
   { title: 'A New Project', desctiption: 'A New Project description' },
@@ -28,21 +31,49 @@ const tags= [
 
 export const ScottsForm=  () => {
   const [formValue, setFormValue]= useState('');
+  const [searchTerm, setSearchTerm]= useState([]);
+  const [filtered, setFiltered]= useState(projects);
+
 
   const handleChange= e => {
     setFormValue(e.target.value);
-    console.log('handlechange: ', e.target.value);
   }//end handleChange
 
-  return(
+  const handleKeyDown= e => {
+    //listen for 'Enter' and submit
+    if( e.key === 'Enter' ){
+      //submit on 'Enter'
+      handleSubmit(e);
+    }
+  }//end handleKeyDown
 
+  const handleSubmit= e => {
+    e.preventDefault();
+    setSearchTerm( formValue.toLowerCase() );
+    setFormValue('')
+
+    let temp= filtered.filter(ele => {
+      return ele.title.toLowerCase().includes(searchTerm)
+    })
+    setFiltered(temp);
+
+  }//end handleSubmit
+
+  useEffect(() => {
+    console.log('effect fired!')
+  }, [filtered])
+
+
+
+  return(
     <>
       <form 
-        autocomplete= 'off'
-        onSubmit= {e => {e.preventDefault()}}
+        autoComplete= 'off'
+        onSubmit= {handleSubmit}
         >
-        <input 
+        <input
           onChange= {handleChange}
+          onKeyDown={handleKeyDown}
           type= 'text'
           id= 'search'
           name= 'search'
@@ -50,9 +81,18 @@ export const ScottsForm=  () => {
           value= {formValue}
         />
       </form>
+
+      <div className= 'dataDisplay'>
+        {filtered.map(project => {
+          return (<div key= {Date.now() * Math.random()}>
+            {project.title}
+            <br /><br />
+          </div>)
+        })}
+      </div>
+      {console.log('searchTerm: ', searchTerm)}
+      {console.log('filtered: ', filtered)}
       {console.log('formValue: ', formValue)}
     </>
-
   )
-
 }//end ScottsForm
